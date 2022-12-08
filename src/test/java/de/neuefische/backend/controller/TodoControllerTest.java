@@ -17,6 +17,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -140,8 +141,25 @@ class TodoControllerTest {
     }
 
     @Test
-    void updateTodo_returns404IfTodoWithGivenIdIsNotFound() throws Exception {
-        this.mvc.perform(put("/api/todo/123"))
+    void deleteTodoById() throws Exception
+    {
+        // given
+        Todo todo = new Todo("123", "Does not matter", Status.OPEN);
+        this.todoRepository.addTodo(todo);
+
+        // when + then
+        this.mvc.perform(delete("/api/todo/123"))
+                .andExpect(status().isOk());
+
+        List<Todo> todosAfterDelete = this.todoRepository.getTodos();
+
+        assertFalse(todosAfterDelete.contains(todo));
+    }
+
+    @Test
+    void deleteTodoById_returns404IfTodoWithGivenIdIsNotFound() throws Exception
+    {
+        this.mvc.perform(delete("/api/todo/123"))
                 .andExpect(status().isNotFound());
     }
 }

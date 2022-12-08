@@ -37,4 +37,8 @@ public class TodoRepository {
     public Todo getTodoById(String id) {
         return this.todos.get(id);
     }
+
+    public Todo deleteTodoById(String id) {
+        return this.todos.remove(id);
+    }
 }

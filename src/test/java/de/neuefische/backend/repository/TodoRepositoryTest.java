@@ -104,4 +104,39 @@ class TodoRepositoryTest {
         // then
         assertNull(actual);
     }
+
+    @Test
+    void deleteTodoById_deletesTodoAndReturnsDeletedTodo() {
+        // given
+        Todo toBeDeleted = new Todo("999", "Whatever", Status.OPEN);
+
+        List<Todo> todos = List.of(
+                new Todo("123", "Do something", Status.OPEN),
+                toBeDeleted,
+                new Todo("234", "Do something else", Status.OPEN)
+        );
+
+        // when
+        TodoRepository sut = new TodoRepository(todos);
+        Todo actual = sut.deleteTodoById(toBeDeleted.getId());
+
+        // then
+        assertEquals(toBeDeleted, actual);
+    }
+
+    @Test
+    void deleteTodoById_returnNullIfNotTodoWithGivenIdIsFound() {
+        // given
+        List<Todo> todos = List.of(
+                new Todo("123", "Do something", Status.OPEN),
+                new Todo("234", "Do something else", Status.OPEN)
+        );
+
+        // when
+        TodoRepository sut = new TodoRepository(todos);
+        Todo actual = sut.deleteTodoById("999");
+
+        // then
+        assertNull(actual);
+    }
 }

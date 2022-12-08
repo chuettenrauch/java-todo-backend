@@ -88,4 +88,23 @@ class TodoServiceTest {
 
         verify(todoRepository).addTodo(expected);
     }
+
+    @Test
+    void deleteTodoById_delegatesToRepository() {
+        // given
+        Todo toBeDeleted = new Todo("111", "Whatever", Status.IN_PROGRESS);
+
+        TodoRepository todoRepository = mock(TodoRepository.class);
+        when(todoRepository.deleteTodoById(toBeDeleted.getId())).thenReturn(toBeDeleted);
+
+
+        // when
+        TodoService sut = new TodoService(todoRepository);
+        Todo actual = sut.deleteTodoById(toBeDeleted.getId());
+
+        // then
+        assertEquals(toBeDeleted, actual);
+
+        verify(todoRepository).deleteTodoById(toBeDeleted.getId());
+    }
 }
