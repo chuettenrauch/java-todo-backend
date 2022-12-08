@@ -40,4 +40,8 @@ public class TodoService {
     public Todo deleteTodoById(String id) {
         return this.todoRepository.deleteTodoById(id);
     }
+
+    public boolean todoWithIdExists(String id) {
+        return this.todoRepository.containsId(id);
+    }
 }

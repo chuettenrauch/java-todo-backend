@@ -41,4 +41,8 @@ public class TodoRepository {
     public Todo deleteTodoById(String id) {
         return this.todos.remove(id);
     }
+
+    public boolean containsId(String id) {
+        return this.todos.containsKey(id);
+    }
 }

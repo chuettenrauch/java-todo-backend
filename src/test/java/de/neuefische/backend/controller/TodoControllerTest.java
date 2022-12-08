@@ -141,6 +141,19 @@ class TodoControllerTest {
     }
 
     @Test
+    void updateTodoById_returns404IfTodoWithGivenIdIsNotFound() throws Exception
+    {
+        // given
+        MockHttpServletRequestBuilder put = put("/api/todo/123")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}");
+
+        // when + then
+        this.mvc.perform(put)
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void deleteTodoById() throws Exception
     {
         // given

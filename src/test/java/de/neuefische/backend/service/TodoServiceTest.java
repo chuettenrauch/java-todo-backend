@@ -107,4 +107,42 @@ class TodoServiceTest {
 
         verify(todoRepository).deleteTodoById(toBeDeleted.getId());
     }
+
+    @Test
+    void todoWithIdExists_returnsTrueIfTodoExistsInRepo() {
+        // given
+        String id = "123";
+
+        TodoRepository todoRepository = mock(TodoRepository.class);
+        when(todoRepository.containsId(id)).thenReturn(true);
+
+
+        // when
+        TodoService sut = new TodoService(todoRepository);
+        boolean actual = sut.todoWithIdExists(id);
+
+        // then
+        assertTrue(actual);
+
+        verify(todoRepository).containsId(id);
+    }
+
+    @Test
+    void todoWithIdExists_returnsFalsefTodoDoesNotExistsInRepo() {
+        // given
+        String id = "123";
+
+        TodoRepository todoRepository = mock(TodoRepository.class);
+        when(todoRepository.containsId(id)).thenReturn(false);
+
+
+        // when
+        TodoService sut = new TodoService(todoRepository);
+        boolean actual = sut.todoWithIdExists(id);
+
+        // then
+        assertFalse(actual);
+
+        verify(todoRepository).containsId(id);
+    }
 }

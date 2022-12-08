@@ -27,26 +27,28 @@ public class TodoController {
 
     @GetMapping("/{id}")
     public Todo getTodoById(@PathVariable String id) {
-        Todo todo = this.todoService.getTodoById(id);
-
-        if (todo == null) {
+        if (!this.todoService.todoWithIdExists(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
-        return todo;
+        return this.todoService.getTodoById(id);
     }
 
     @PutMapping("/{id}")
     public Todo updateTodoById(@PathVariable String id, @RequestBody Todo todo) {
+        if (!this.todoService.todoWithIdExists(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
         return this.todoService.updateTodoById(id, todo);
     }
 
     @DeleteMapping("/{id}")
     public void deleteTodoById(@PathVariable String id) {
-        Todo deletedTodo = this.todoService.deleteTodoById(id);
-
-        if (deletedTodo == null) {
+        if (!this.todoService.todoWithIdExists(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+
+        this.todoService.deleteTodoById(id);
     }
 }

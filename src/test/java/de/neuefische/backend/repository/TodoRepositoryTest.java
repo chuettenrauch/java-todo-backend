@@ -139,4 +139,22 @@ class TodoRepositoryTest {
         // then
         assertNull(actual);
     }
+
+    @Test
+    void containsId() {
+        // given
+        Todo existing = new Todo("123", "Do something", Status.OPEN);
+
+        List<Todo> todos = List.of(
+                new Todo("234", "Do something else", Status.OPEN),
+                existing,
+                new Todo("456", "Do something else", Status.OPEN)
+        );
+
+        // when
+        TodoRepository sut = new TodoRepository(todos);
+
+        assertTrue(sut.containsId(existing.getId()));
+        assertFalse(sut.containsId("does-not-exists"));
+    }
 }
