@@ -22,4 +22,9 @@ public class TodoController {
     public Todo addTodo(@RequestBody Todo todo) {
         return this.todoService.addTodo(todo);
     }
+
+    @GetMapping("/{id}")
+    public Todo getTodoById(@PathVariable String id) {
+        return this.todoService.getTodoById(id);
+    }
 }

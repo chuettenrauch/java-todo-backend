@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class TodoControllerTest {
     @Autowired
     private MockMvc mvc;
@@ -30,7 +31,6 @@ class TodoControllerTest {
     private TodoRepository todoRepository;
 
     @Test
-    @DirtiesContext
     void getAllTodos() throws Exception {
         // given
         List<Todo> todos = new ArrayList<>(
@@ -64,7 +64,6 @@ class TodoControllerTest {
     }
 
     @Test
-    @DirtiesContext
     void addTodo() throws Exception {
         // given
         String content = """
@@ -83,5 +82,31 @@ class TodoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(content))
                 .andExpect(jsonPath("$.id", notNullValue()));
+    }
+
+    @Test
+    void getTodoById() throws Exception {
+        // given
+        Todo todo = new Todo("123", "Paket abholen", Status.OPEN);
+        this.todoRepository.addTodo(todo);
+
+        String expectedJson = """
+                        {
+                            "id": "123",
+                            "description": "Paket abholen",
+                            "status": "OPEN"
+                        }
+                """;
+
+        // when + then
+        this.mvc.perform(get("/api/todo/123"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedJson, true));
+    }
+
+    @Test
+    void getTodoById_returns404IfTodoWithGivenIdIsNotFound() throws Exception {
+        this.mvc.perform(get("/api/todo/123"))
+                .andExpect(status().isNotFound());
     }
 }

@@ -5,7 +5,6 @@ import de.neuefische.backend.model.Todo;
 import de.neuefische.backend.repository.TodoRepository;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,11 +15,9 @@ class TodoServiceTest {
     @Test
     void listTodos_delegatesToRepository() {
         // given
-        List<Todo> todos = new ArrayList<>(
-                List.of(
-                        new Todo("123", "Do something", Status.OPEN),
-                        new Todo("234","Do something else", Status.OPEN)
-                )
+        List<Todo> todos = List.of(
+                new Todo("123", "Do something", Status.OPEN),
+                new Todo("234", "Do something else", Status.OPEN)
         );
 
         TodoRepository todoRepository = mock(TodoRepository.class);
@@ -53,5 +50,23 @@ class TodoServiceTest {
         assertNotEquals(null, actual.getId());
 
         verify(todoRepository).addTodo(todo);
+    }
+
+    @Test
+    void getTodoById_delegatesToRepository() {
+        // given
+        Todo expected = new Todo("999", "Whatever", Status.OPEN);
+
+        TodoRepository todoRepository = mock(TodoRepository.class);
+        when(todoRepository.getTodoById(expected.getId())).thenReturn(expected);
+
+        // when
+        TodoService sut = new TodoService(todoRepository);
+        Todo actual = sut.getTodoById(expected.getId());
+
+        // then
+        assertEquals(expected, actual);
+
+        verify(todoRepository).getTodoById(expected.getId());
     }
 }

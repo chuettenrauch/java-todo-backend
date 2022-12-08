@@ -49,4 +49,41 @@ class TodoRepositoryTest {
         assertEquals(expected, actual);
         assertTrue(sut.getTodos().contains(expected));
     }
+
+    @Test
+    void getTodoById_returnsTodo() {
+        // given
+        Todo expected = new Todo("999", "Whatever", Status.OPEN);
+
+        List<Todo> todos = List.of(
+                new Todo("123", "Do something", Status.OPEN),
+                expected,
+                new Todo("234", "Do something else", Status.OPEN)
+        );
+
+        // when
+        TodoRepository sut = new TodoRepository(todos);
+        Todo actual = sut.getTodoById(expected.getId());
+
+        // then
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getTodoById_returnsNullIfTodoWithGivenIdIsNotFound() {
+        // given
+        Todo expected = new Todo("999", "Whatever", Status.OPEN);
+
+        List<Todo> todos = List.of(
+                new Todo("123", "Do something", Status.OPEN),
+                new Todo("234", "Do something else", Status.OPEN)
+        );
+
+        // when
+        TodoRepository sut = new TodoRepository(todos);
+        Todo actual = sut.getTodoById(expected.getId());
+
+        // then
+        assertNull(actual);
+    }
 }
