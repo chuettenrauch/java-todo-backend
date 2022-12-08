@@ -51,6 +51,24 @@ class TodoRepositoryTest {
     }
 
     @Test
+    void addTodo_replacesExistingTodo() {
+        // given
+        Todo toBeReplaced = new Todo("123", "Old description", Status.OPEN);
+        Todo expected = new Todo(toBeReplaced.getId(), "New descroption", Status.IN_PROGRESS);
+
+        // when
+        TodoRepository sut = new TodoRepository(List.of(toBeReplaced));
+        Todo actual = sut.addTodo(expected);
+
+        List<Todo> todosAfterAdd = sut.getTodos();
+
+        // then
+        assertEquals(expected, actual);
+        assertFalse(todosAfterAdd.contains(toBeReplaced));
+        assertTrue(todosAfterAdd.contains(expected));
+    }
+
+    @Test
     void getTodoById_returnsTodo() {
         // given
         Todo expected = new Todo("999", "Whatever", Status.OPEN);

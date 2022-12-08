@@ -69,4 +69,23 @@ class TodoServiceTest {
 
         verify(todoRepository).getTodoById(expected.getId());
     }
+
+    @Test
+    void updateTodoById_updatesIdInTodoAndDelegatesToRepository() {
+        // given
+        Todo given = new Todo("111", "Whatever", Status.IN_PROGRESS);
+        Todo expected = new Todo("999", given.getDescription(), given.getStatus());
+
+        TodoRepository todoRepository = mock(TodoRepository.class);
+        when(todoRepository.addTodo(expected)).thenReturn(expected);
+
+        // when
+        TodoService sut = new TodoService(todoRepository);
+        Todo actual = sut.updateTodoById(expected.getId(), given);
+
+        // then
+        assertEquals(expected, actual);
+
+        verify(todoRepository).addTodo(expected);
+    }
 }

@@ -38,4 +38,10 @@ public class TodoService {
 
         return todo;
     }
+
+    public Todo updateTodoById(String id, Todo todo) {
+        todo.setId(id);
+
+        return this.todoRepository.addTodo(todo);
+    }
 }

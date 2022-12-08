@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.notNullValue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -107,6 +107,41 @@ class TodoControllerTest {
     @Test
     void getTodoById_returns404IfTodoWithGivenIdIsNotFound() throws Exception {
         this.mvc.perform(get("/api/todo/123"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updateTodoById() throws Exception {
+        // given
+        Todo todo = new Todo("123", "Old description", Status.OPEN);
+        this.todoRepository.addTodo(todo);
+
+        String content = """
+                {
+                    "id": "123",
+                    "description": "New description",
+                    "status": "IN_PROGRESS"
+                }
+                """;
+
+        MockHttpServletRequestBuilder put = put("/api/todo/123")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content);
+
+        // when + then
+        this.mvc.perform(put)
+                .andExpect(status().isOk())
+                .andExpect(content().json(content, true));
+
+        Todo updatedTodo = this.todoRepository.getTodoById(todo.getId());
+
+        assertEquals("New description", updatedTodo.getDescription());
+        assertEquals(Status.IN_PROGRESS, updatedTodo.getStatus());
+    }
+
+    @Test
+    void updateTodo_returns404IfTodoWithGivenIdIsNotFound() throws Exception {
+        this.mvc.perform(put("/api/todo/123"))
                 .andExpect(status().isNotFound());
     }
 }
