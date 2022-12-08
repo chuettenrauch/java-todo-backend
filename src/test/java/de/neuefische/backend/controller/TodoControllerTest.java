@@ -15,10 +15,10 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -35,8 +35,8 @@ class TodoControllerTest {
         // given
         List<Todo> todos = new ArrayList<>(
                 List.of(
-                        new Todo("Do something", Status.OPEN),
-                        new Todo("Do something else", Status.OPEN)
+                        new Todo("123", "Do something", Status.OPEN),
+                        new Todo("234", "Do something else", Status.OPEN)
                 )
         );
 
@@ -45,10 +45,12 @@ class TodoControllerTest {
         String expectedJson = """
                         [
                             {
+                                "id": "123",
                                 "description": "Do something",
                                 "status": "OPEN"
                             },
                             {
+                                "id": "234",
                                 "description": "Do something else",
                                 "status": "OPEN"
                             }
@@ -58,7 +60,7 @@ class TodoControllerTest {
         // when + then
         this.mvc.perform(get("/api/todo"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(expectedJson));
+                .andExpect(content().json(expectedJson, true));
     }
 
     @Test
@@ -79,6 +81,7 @@ class TodoControllerTest {
         // when + then
         this.mvc.perform(post)
                 .andExpect(status().isOk())
-                .andExpect(content().json(content));
+                .andExpect(content().json(content))
+                .andExpect(jsonPath("$.id", notNullValue()));
     }
 }

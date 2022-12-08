@@ -23,8 +23,8 @@ class TodoRepositoryTest {
         // given
         List<Todo> expected = new ArrayList<>(
                 List.of(
-                        new Todo("Do something", Status.OPEN),
-                        new Todo("Do something else", Status.OPEN)
+                        new Todo("123", "Do something", Status.OPEN),
+                        new Todo("234", "Do something else", Status.OPEN)
                 )
         );
 
@@ -39,7 +39,7 @@ class TodoRepositoryTest {
     @Test
     void addTodo_addsTodoToList() {
         // given
-        Todo expected = new Todo("Do something", Status.OPEN);
+        Todo expected = new Todo("123", "Do something", Status.OPEN);
 
         // when
         TodoRepository sut = new TodoRepository();

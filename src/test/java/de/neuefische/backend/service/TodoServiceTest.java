@@ -18,8 +18,8 @@ class TodoServiceTest {
         // given
         List<Todo> todos = new ArrayList<>(
                 List.of(
-                        new Todo("Do something", Status.OPEN),
-                        new Todo("Do something else", Status.OPEN)
+                        new Todo("123", "Do something", Status.OPEN),
+                        new Todo("234","Do something else", Status.OPEN)
                 )
         );
 
@@ -37,9 +37,9 @@ class TodoServiceTest {
     }
 
     @Test
-    void addTodo_delegatesToRepository() {
+    void addTodo_addsRandomIdAndDelegatesToRepository() {
         // given
-        Todo todo = new Todo("Do something", Status.OPEN);
+        Todo todo = new Todo(null, "Do something", Status.OPEN);
 
         TodoRepository todoRepository = mock(TodoRepository.class);
         when(todoRepository.addTodo(todo)).thenReturn(todo);
@@ -50,6 +50,7 @@ class TodoServiceTest {
 
         // then
         assertEquals(todo, actual);
+        assertNotEquals(null, actual.getId());
 
         verify(todoRepository).addTodo(todo);
     }
