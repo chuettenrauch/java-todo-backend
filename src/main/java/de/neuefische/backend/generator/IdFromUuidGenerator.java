@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
-@ConditionalOnProperty(prefix = "app", name = "id-generator", havingValue = "uuid")
+@ConditionalOnProperty(prefix = "app", name = "id-generator", havingValue = "uuid", matchIfMissing = true)
 public class IdFromUuidGenerator implements IdGeneratorInterface {
     @Override
     public String generateId() {
