@@ -1,5 +1,6 @@
 package de.neuefische.backend.service;
 
+import de.neuefische.backend.generator.IdGeneratorInterface;
 import de.neuefische.backend.model.Status;
 import de.neuefische.backend.model.Todo;
 import de.neuefische.backend.repository.TodoRepository;
@@ -23,8 +24,10 @@ class TodoServiceTest {
         TodoRepository todoRepository = mock(TodoRepository.class);
         when(todoRepository.getTodos()).thenReturn(todos);
 
+        IdGeneratorInterface idGenerator = mock(IdGeneratorInterface.class);
+
         // when
-        TodoService sut = new TodoService(todoRepository);
+        TodoService sut = new TodoService(todoRepository, idGenerator);
         List<Todo> actual = sut.listTodos();
 
         // then
@@ -37,17 +40,21 @@ class TodoServiceTest {
     void addTodo_addsRandomIdAndDelegatesToRepository() {
         // given
         Todo todo = new Todo(null, "Do something", Status.OPEN);
+        String expectedId = "some-random-id";
 
         TodoRepository todoRepository = mock(TodoRepository.class);
         when(todoRepository.addTodo(todo)).thenReturn(todo);
 
+        IdGeneratorInterface idGenerator = mock(IdGeneratorInterface.class);
+        when(idGenerator.generateId()).thenReturn(expectedId);
+
         // when
-        TodoService sut = new TodoService(todoRepository);
+        TodoService sut = new TodoService(todoRepository, idGenerator);
         Todo actual = sut.addTodo(todo);
 
         // then
         assertEquals(todo, actual);
-        assertNotEquals(null, actual.getId());
+        assertEquals(expectedId, actual.getId());
 
         verify(todoRepository).addTodo(todo);
     }
@@ -60,8 +67,10 @@ class TodoServiceTest {
         TodoRepository todoRepository = mock(TodoRepository.class);
         when(todoRepository.getTodoById(expected.getId())).thenReturn(expected);
 
+        IdGeneratorInterface idGenerator = mock(IdGeneratorInterface.class);
+
         // when
-        TodoService sut = new TodoService(todoRepository);
+        TodoService sut = new TodoService(todoRepository, idGenerator);
         Todo actual = sut.getTodoById(expected.getId());
 
         // then
@@ -79,8 +88,10 @@ class TodoServiceTest {
         TodoRepository todoRepository = mock(TodoRepository.class);
         when(todoRepository.addTodo(expected)).thenReturn(expected);
 
+        IdGeneratorInterface idGenerator = mock(IdGeneratorInterface.class);
+
         // when
-        TodoService sut = new TodoService(todoRepository);
+        TodoService sut = new TodoService(todoRepository, idGenerator);
         Todo actual = sut.updateTodoById(expected.getId(), given);
 
         // then
@@ -97,9 +108,10 @@ class TodoServiceTest {
         TodoRepository todoRepository = mock(TodoRepository.class);
         when(todoRepository.deleteTodoById(toBeDeleted.getId())).thenReturn(toBeDeleted);
 
+        IdGeneratorInterface idGenerator = mock(IdGeneratorInterface.class);
 
         // when
-        TodoService sut = new TodoService(todoRepository);
+        TodoService sut = new TodoService(todoRepository, idGenerator);
         Todo actual = sut.deleteTodoById(toBeDeleted.getId());
 
         // then
@@ -116,9 +128,10 @@ class TodoServiceTest {
         TodoRepository todoRepository = mock(TodoRepository.class);
         when(todoRepository.containsId(id)).thenReturn(true);
 
+        IdGeneratorInterface idGenerator = mock(IdGeneratorInterface.class);
 
         // when
-        TodoService sut = new TodoService(todoRepository);
+        TodoService sut = new TodoService(todoRepository, idGenerator);
         boolean actual = sut.todoWithIdExists(id);
 
         // then
@@ -135,9 +148,10 @@ class TodoServiceTest {
         TodoRepository todoRepository = mock(TodoRepository.class);
         when(todoRepository.containsId(id)).thenReturn(false);
 
+        IdGeneratorInterface idGenerator = mock(IdGeneratorInterface.class);
 
         // when
-        TodoService sut = new TodoService(todoRepository);
+        TodoService sut = new TodoService(todoRepository, idGenerator);
         boolean actual = sut.todoWithIdExists(id);
 
         // then
